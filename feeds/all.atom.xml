@@ -309,7 +309,7 @@ In our example the nested list has a size of 7.6% of the original data.&lt;/p&gt
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;p&gt;While writing this post, I also came across a nifty [project[(&lt;a href="https://github.com/fogleman/Quads"&gt;https://github.com/fogleman/Quads&lt;/a&gt;) for doing quadmeshs on images, with a &lt;a href="https://www.michaelfogleman.com/static/quads/"&gt;website&lt;/a&gt; that let's you upload images per drag-and-drop.&lt;/p&gt;
+&lt;p&gt;While writing this post, I also came across a nifty &lt;a href="https://github.com/fogleman/Quads"&gt;project&lt;/a&gt; for doing quadmeshs on images, with a &lt;a href="https://www.michaelfogleman.com/static/quads/"&gt;website&lt;/a&gt; that let's you upload images per drag-and-drop.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
