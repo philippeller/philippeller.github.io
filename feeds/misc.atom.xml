@@ -124,7 +124,7 @@ The resulting data structure is also known as a &lt;a href="https://en.wikipedia
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
-&lt;h2 id="Reconstruction-Original"&gt;Reconstruction Original&lt;a class="anchor-link" href="#Reconstruction-Original"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In order to reconstruct the original image from this quadtree format, we can define a helper function to lookup the value at any position x,y.&lt;/p&gt;
+&lt;h2 id="Reconstruction-of-Original"&gt;Reconstruction of Original&lt;a class="anchor-link" href="#Reconstruction-of-Original"&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In order to reconstruct the original image from this quadtree format, we can define a helper function to lookup the value at any position x,y.&lt;/p&gt;
 
 &lt;/div&gt;
 &lt;/div&gt;
