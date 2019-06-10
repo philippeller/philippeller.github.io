@@ -55,36 +55,19 @@
 </div>		<div class="content container">
 	<div class="posts">
 			<div class="post">
-				<h1 class="post-title" href="https://philippeller.github.io/partitioning.html#partitioning">
-					<a href="https://philippeller.github.io/partitioning.html#partitioning">Partitioning</a>
+				<h1 class="post-title" href="https://philippeller.github.io/quadtree-partitioning.html#quadtree-partitioning">
+					<a href="https://philippeller.github.io/quadtree-partitioning.html#quadtree-partitioning">Quadtree partitioning</a>
 				</h1>
-				<span class="post-date">Sat 22 February 2020</span>
+				<span class="post-date">Sun 09 June 2019</span>
 				<p>
 					
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Blah blah, something text here</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[90]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x_low</span><span class="p">,</span> <span class="n">x_high</span><span class="p">,</span> <span class="n">y_low</span><span class="p">,</span> <span class="n">y_high</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">counter</span>
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">x_low</span><span class="p">:</span><span class="n">x_high</span><span class="p">,</span> <span class="n">y_low</span><span class="p">:</span><span class="n">y_high</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">std</span><span class="p">:</span>
-        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">x_low</span><span class="p">:</span><span class="n">x_high</span><span class="p">,</span> <span class="n">y_low</span><span class="p">:</span><span class="n">y_high</span><span class="p">])</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">x_middle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">x_low</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_high</span> <span class="o">-</span> <span class="n">x_low</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">y_middle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">y_low</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_high</span> <span class="o">-</span> <span class="n">y_low …</span></pre></div></div></div></div></div>
+<p>High resolution data can pose problems in memory requirements, expecially in higher dimensions. We explore a simple way of reducing a 2d array by clustering together neighbouring elements that are within a given standard deviation.
+The function recursively groups together data points until the standard deviation cirteria is not satisfied …</p></div></div></div>
 				</p>
-				<a class="read-more" href="partitioning.html">Continue reading »</a>
+				<a class="read-more" href="quadtree-partitioning.html">Continue reading »</a>
 			</div>
 	</div>
 	<div class="pagination">
