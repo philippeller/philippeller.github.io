@@ -1,5 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Andromediary</title><link href="https://philippeller.github.io/" rel="alternate"></link><link href="https://philippeller.github.io/feeds/all.atom.xml" rel="self"></link><id>https://philippeller.github.io/</id><updated>2019-06-09T00:00:00+02:00</updated><entry><title>Quadtree partitioning</title><link href="https://philippeller.github.io/quadtree-partitioning.html" rel="alternate"></link><published>2019-06-09T00:00:00+02:00</published><updated>2019-06-09T00:00:00+02:00</updated><author><name>Philipp Eller</name></author><id>tag:philippeller.github.io,2019-06-09:/quadtree-partitioning.html</id><summary type="html">
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andromediary</title><link href="https://philippeller.github.io/" rel="alternate"></link><link href="https://philippeller.github.io/feeds/all.atom.xml" rel="self"></link><id>https://philippeller.github.io/</id><updated>2019-06-16T00:00:00+02:00</updated><entry><title>Simplex-based optimization in spherical coordinates</title><link href="https://philippeller.github.io/simplex-based-optimization-in-spherical-coordinates.html" rel="alternate"></link><published>2019-06-16T00:00:00+02:00</published><updated>2019-06-16T00:00:00+02:00</updated><author><name>Philipp Eller</name></author><id>tag:philippeller.github.io,2019-06-16:/simplex-based-optimization-in-spherical-coordinates.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
+simplex based algorithms are a popular choice. In particular the
+&lt;a href="https://doi.org/10.1093/comjnl/7.4.308"&gt;Nelder-Mead method&lt;/a&gt; is widely used for local
+optimization and also serves as the example in this article, other
+variants include the controlled random search (&lt;a href="https://doi.org/10.1007/BF00933504"&gt;CRS&lt;/a&gt; and &lt;a href="https://doi.org/10.1007/s10957-006-9101-0"&gt;CRS2&lt;/a&gt;) or Constrained Optimization by …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
+simplex based algorithms are a popular choice. In particular the
+&lt;a href="https://doi.org/10.1093/comjnl/7.4.308"&gt;Nelder-Mead method&lt;/a&gt; is widely used for local
+optimization and also serves as the example in this article, other
+variants include the controlled random search (&lt;a href="https://doi.org/10.1007/BF00933504"&gt;CRS&lt;/a&gt; and &lt;a href="https://doi.org/10.1007/s10957-006-9101-0"&gt;CRS2&lt;/a&gt;) or Constrained Optimization by Linear Approximations
+(&lt;a href="https://doi.org/10.1007/978-94-015-8330-5_4"&gt;COBYLA&lt;/a&gt;) for global optimization. The probably most defining
+feature of simplex methods is the creation of new trial points by
+reflection of a point about the centroid of another set of points.&lt;/p&gt;
+&lt;p&gt;Standard implementations of these algorithms perform the operations
+assuming that the &lt;span class="math"&gt;\(n\)&lt;/span&gt;-dimensional parameter space of the objective
+function is Euclidean. However, if our parameter space is of
+non-Euclidean nature, such as the surface of a sphere, the standard
+assumptions break down.&lt;/p&gt;
+&lt;p&gt;Here we will discuss how to correctly adapt the Nelder-Mead algorithm to
+work with spherical coordinates in three dimensions. Our coordinate
+system choice is given in Eq. [eq:coord], with the spherical
+coordinates &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; and &lt;span class="math"&gt;\(\varphi\)&lt;/span&gt; representing the zenith and azimuth
+angles, and their representation in cartesian coordinates &lt;span class="math"&gt;\(x\)&lt;/span&gt;, &lt;span class="math"&gt;\(y\)&lt;/span&gt; and
+&lt;span class="math"&gt;\(z\)&lt;/span&gt; on the unit sphere.&lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{aligned}
+\begin{split}
+\begin{cases}
+x=\sin\theta \, \cos\varphi \\
+y=\sin\theta \, \sin\varphi \\
+z=\cos\theta
+\end{cases}
+\end{split}
+\label{eq:coord}\end{aligned}$$&lt;/div&gt;
+&lt;h1&gt;Nelder-Mead Algorithm&lt;/h1&gt;
+&lt;p&gt;In abbreviated form, a “vanilla” Nelder-Mead algorithm minimizing the
+function &lt;span class="math"&gt;\(f\)&lt;/span&gt; repeatedly performs the following operations on &lt;span class="math"&gt;\(n+1\)&lt;/span&gt;
+points (the simplex) in &lt;span class="math"&gt;\(n\)&lt;/span&gt; dimensions, until a desired convergence
+criterion is met.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Order all points &lt;span class="math"&gt;\(p\)&lt;/span&gt; by their function values &lt;span class="math"&gt;\(f(p)\)&lt;/span&gt;, such that
+    &lt;span class="math"&gt;\(f(p_1) \leq f(p_2) \leq \cdots \leq f(p_{n+1})\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Calculate the centroid &lt;span class="math"&gt;\(c\)&lt;/span&gt; of the &lt;span class="math"&gt;\(n\)&lt;/span&gt; points &lt;span class="math"&gt;\(p_1 \cdots p_n\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a new trial point &lt;span class="math"&gt;\(\bar{p}_{n+1}\)&lt;/span&gt; by reflecting point
+    &lt;span class="math"&gt;\(p_{n+1}\)&lt;/span&gt; about the centroid &lt;span class="math"&gt;\(c\)&lt;/span&gt;, if &lt;span class="math"&gt;\(f(p_1) \leq f(\bar{p}_{n+1}) &amp;lt; f(p_n)\)&lt;/span&gt;, accept the new
+    point replacing &lt;span class="math"&gt;\(p_{n+1}\)&lt;/span&gt; and start over (Step 1)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If &lt;span class="math"&gt;\(f(\bar{p}_{n+1}) &amp;lt; f(p_1)\)&lt;/span&gt;, expand the new point further
+    away on the line connecting it back to the centroid (usually factor
+    2x, i.e. the distance of the original point to the centroid is the
+    same as the distance from the centroid to the expanded point), if
+    this new point is better then the reflected one, accept the new
+    point replacing &lt;span class="math"&gt;\(p_{n+1}\)&lt;/span&gt; and start over (Step 1), otherwise accept
+    the reflected point and start over&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create a new trial point that is the mid-point between &lt;span class="math"&gt;\(p_{n+1}\)&lt;/span&gt; and
+    &lt;span class="math"&gt;\(c\)&lt;/span&gt;, if its function value is better than that of &lt;span class="math"&gt;\(p_{n+1}\)&lt;/span&gt;, us the
+    new point as replacement and start over&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Shrink all points, except for the best point &lt;span class="math"&gt;\(p_1\)&lt;/span&gt;, by replacing
+    them by their midpoint towards &lt;span class="math"&gt;\(p_1\)&lt;/span&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;Adaption to Spherical Coordinates&lt;/h1&gt;
+&lt;p&gt;One might be tempted to use a standard implementation of Nelder-Mead
+operating directly on &lt;span class="math"&gt;\(\theta\)&lt;/span&gt; and &lt;span class="math"&gt;\(\varphi\)&lt;/span&gt;, and applying a “fix” by
+simply assuring that the points outside of &lt;span class="math"&gt;\(\varphi \in [0,2\pi)\)&lt;/span&gt; are
+handled by “wrapping around” azimuth by &lt;span class="math"&gt;\(\varphi = \varphi \mod 2\pi\)&lt;/span&gt;.
+Similarly, zenith values falling outside of &lt;span class="math"&gt;\(\theta \in [0,\pi)\)&lt;/span&gt; can be
+reflecting back at the edges. We will use this approach as comparison
+labeled as the “naive” method in the following.&lt;/p&gt;
+&lt;p&gt;For our “correct” Nelder-Mead algorithm, we will use the method
+described in the follwoing.&lt;/p&gt;
+&lt;h2 id="sec:centroid"&gt;Centroid Calculation&lt;/h2&gt;
+&lt;p&gt;In order to calculated the centroid of &lt;span class="math"&gt;\(n\)&lt;/span&gt; points (Step 2) given their
+spherical coordinates
+&lt;span class="math"&gt;\((\theta_1, \varphi_1), (\theta_2, \varphi_2), \dots (\theta_n, \varphi_n)\)&lt;/span&gt;,
+we will resort to their representation in cartesian coordinates. We can
+then simply calculate the centroid (element-wise average) in &lt;span class="math"&gt;\(x\)&lt;/span&gt;, &lt;span class="math"&gt;\(y\)&lt;/span&gt;
+and &lt;span class="math"&gt;\(z\)&lt;/span&gt;, normalize to assure &lt;span class="math"&gt;\(x^2 + y^2 + z^2 = 1\)&lt;/span&gt;, and subsequently
+transform back to spherical coordinates to obtain the centroit in zenith
+and azimuth.&lt;/p&gt;
+&lt;p&gt;Also the operations in steps 5 &amp;amp; 6, where the midpoint of two points has
+to be determined, can use the same as it is essentially the centroid of
+two points.&lt;/p&gt;
+&lt;h2 id="sec:reflection"&gt;Point Reflection&lt;/h2&gt;
+&lt;p&gt;Calculating point reflections (Step 3) is slightly more involved, but
+does not pose any serious problem either. Assuming we want to reflect a
+point &lt;span class="math"&gt;\(p\)&lt;/span&gt; around the centroid &lt;span class="math"&gt;\((\theta_c, \varphi_c)\)&lt;/span&gt; into a new point
+&lt;span class="math"&gt;\(\bar{p}\)&lt;/span&gt;, we first transform our coordinate system so, that the
+centroid comes to lie at the North Pole of the unit sphere. This is
+achieved by a rotation &lt;span class="math"&gt;\(R_z^T(\phi_c)\)&lt;/span&gt; about the &lt;span class="math"&gt;\(z\)&lt;/span&gt;-axis such that our
+centroid point will be on the &lt;span class="math"&gt;\(x-z\)&lt;/span&gt; plane. Then we rotate around the &lt;span class="math"&gt;\(y\)&lt;/span&gt;
+axis by a rotation &lt;span class="math"&gt;\(R_y^T(\theta_c)\)&lt;/span&gt;, which brings the centroid to the
+desired location. In these coordinates, reflections about the centroid
+(now at the North Pole), are as simple as inverting the &lt;span class="math"&gt;\(x\)&lt;/span&gt; and &lt;span class="math"&gt;\(y\)&lt;/span&gt;
+dimensions of a point in its Cartesian representation. After this, we
+transform back into the original representation by un-doing both
+rotations in the correct order. The full operation is shown in
+Eq. [eq:reflection] for a point &lt;span class="math"&gt;\(p\)&lt;/span&gt; in its Cartesian representation.&lt;/p&gt;
+&lt;div class="math"&gt;$$\begin{aligned}
+\begin{split}
+\boldsymbol{\bar{p}} &amp;amp;= R_z(\varphi_c) \cdot R_y(\theta_c) \cdot \mathrm{diag}(-1,-1,1) \cdot R_y^T(\theta_c) \cdot R_z^T(\varphi_c) \cdot \boldsymbol{p}\\
+&amp;amp;= 
+\begin{pmatrix} 
+c_\varphi (-c_\varphi c_\theta^2 + c_\varphi s_\theta^2) - s_\varphi^2 &amp;amp; c_\varphi s_\varphi + s_\varphi (-c_\varphi c_\theta^2 + c_\varphi s_\theta^2) &amp;amp;   2 c_\varphi c_\theta s_\theta \\
+c_\varphi s_\varphi + c_\varphi (-s_\varphi c_\theta^2 + s_\varphi s_\theta^2) &amp;amp; -c_\varphi^2 + s_\varphi (-s_\varphi c_\theta^2  + s_\varphi s_\theta^2) &amp;amp;    2 s_\varphi c_\theta s_\theta \\
+2 c_\varphi c_\theta s_\theta &amp;amp; 2 s_\varphi c_\theta s_\theta &amp;amp; c_\theta^2 - s_\theta^2    \\      
+\end{pmatrix}
+\cdot \boldsymbol{p}, \textrm{where} 
+\begin{cases}
+c_\varphi = \cos{\varphi_c}\\
+s_\varphi = \sin{\varphi_c}\\
+c_\theta = \cos{\theta_c}\\
+s_\theta = \sin{\theta_c}
+\end{cases}
+\label{eq:reflection}
+\end{split}\end{aligned}$$&lt;/div&gt;
+&lt;p&gt;Also Step 4 can be calculated as another reflection of the centroid &lt;span class="math"&gt;\(c\)&lt;/span&gt;
+about point &lt;span class="math"&gt;\(\bar{p}_{n+1}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;In Fig. 1 we illustrate the difference of performing the two
+discussed operations (centroid and reflection) in the naive way directly
+on &lt;span class="math"&gt;\((\theta, \varphi)\)&lt;/span&gt;, and the correct way using the prescriptions
+discussed above. It is evident that the two method can yield very
+different results.&lt;/p&gt;
+&lt;figure id="p"&gt;&lt;img alt="Fig. 1a: Example simplex consisting of points \(p_1\), \(p_2\) and \(p_3\) drawn on the \((\theta, \varphi)\)-plane. The centroids calculated with both algorithms are shown as \(c\), and the reflections given both methods about the respective centroid is indicated by \(\bar{p}_3\)" src="https://philippeller.github.io/spherical_opt/2d.png"&gt;&lt;figcaption&gt;Fig. 1a: Example simplex consisting of points &lt;span class="math"&gt;\(p_1\)&lt;/span&gt;, &lt;span class="math"&gt;\(p_2\)&lt;/span&gt; and &lt;span class="math"&gt;\(p_3\)&lt;/span&gt; drawn on the &lt;span class="math"&gt;\((\theta, \varphi)\)&lt;/span&gt;-plane. The centroids calculated with both algorithms are shown as &lt;span class="math"&gt;\(c\)&lt;/span&gt;, and the reflections given both methods about the respective centroid is indicated by &lt;span class="math"&gt;\(\bar{p}_3\)&lt;/span&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure id="p"&gt;&lt;img alt="Fig. 1b: Example simplex consisting of points \(p_1\), \(p_2\) and \(p_3\) drawn on a 3d projection of the actual unit sphere (right). The centroids calculated with both algorithms are shown as \(c\), and the reflections given both methods about the respective centroid is indicated by \(\bar{p}_3\)" src="https://philippeller.github.io/spherical_opt/3d.png"&gt;&lt;figcaption&gt;Fig. 1b: Example simplex consisting of points &lt;span class="math"&gt;\(p_1\)&lt;/span&gt;, &lt;span class="math"&gt;\(p_2\)&lt;/span&gt; and &lt;span class="math"&gt;\(p_3\)&lt;/span&gt; drawn on a 3d projection of the actual unit sphere (right). The centroids calculated with both algorithms are shown as &lt;span class="math"&gt;\(c\)&lt;/span&gt;, and the reflections given both methods about the respective centroid is indicated by &lt;span class="math"&gt;\(\bar{p}_3\)&lt;/span&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;h1&gt;Performance&lt;/h1&gt;
+&lt;p&gt;We have now all necessary pieces to run a “correct” Nelder-Mead
+optimization on spherical coordinates. To illustrated the differences
+between this and the “naive” approach, we choose the spherical harmonic
+of degree &lt;span class="math"&gt;\((1,1)\)&lt;/span&gt; to serve as our objective function. In one example we
+place the function minimum in the middle of the &lt;span class="math"&gt;\((\theta, \varphi)\)&lt;/span&gt;
+plane at &lt;span class="math"&gt;\((\pi, \pi/2)\)&lt;/span&gt;, in the second example we add an azimuthal phase
+shift of &lt;span class="math"&gt;\(\pi\)&lt;/span&gt; such that the minimum comes to lie at the edge at
+&lt;span class="math"&gt;\((0, \pi/2)\)&lt;/span&gt;, creating two extreme cases.&lt;/p&gt;
+&lt;p&gt;In Fig. 2, we show one run of both algorithms on the two
+example problems, while starting from the same initial simplex. In the
+case of the minimum conveniently located right in the middle of the
+&lt;span class="math"&gt;\((\theta, \varphi)\)&lt;/span&gt; plane, both algorithms converge toward the minimum
+taking a similar amount of function calls until the stopping condition
+is reached. The used stopping conditions is the standard deviation of
+the function values &lt;span class="math"&gt;\(f(p_i)\)&lt;/span&gt; of all current simplex points &lt;span class="math"&gt;\(p_i\)&lt;/span&gt; must
+drop below a set threshold, here &lt;span class="math"&gt;\(\mathrm{std}(f(p_i)) &amp;lt; 0.00001\)&lt;/span&gt;. In
+the phase shifted case, the correct algorithm has no problem finding the
+true minimum again. But now the naive implementation does not converge
+to the correct minimum and gets stuck.&lt;/p&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig. 2a: Example of one run of the two algorithms with identical starting point (shown in blue square markers). The conturs show the surface of values of the objective function, with lower values darker. The points shown for both algorithms include all trial points, not only the accepted ones. (True minimum at \((\theta, \varphi) = (\pi/2, \pi)\))" src="https://philippeller.github.io/spherical_opt/ex_good.png"&gt;&lt;figcaption&gt;Fig. 2a: Example of one run of the two algorithms with identical starting point (shown in blue square markers). The conturs show the surface of values of the objective function, with lower values darker. The points shown for both algorithms include all trial points, not only the accepted ones. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, \pi)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig. 2b: Example of one run of the two algorithms with identical starting point (shown in blue square markers). The conturs show the surface of values of the objective function, with lower values darker. The points shown for both algorithms include all trial points, not only the accepted ones. (True minimum at \((\theta, \varphi) = (\pi/2, 0)\))" src="https://philippeller.github.io/spherical_opt/ex_bad.png"&gt;&lt;figcaption&gt;Fig. 2b: Example of one run of the two algorithms with identical starting point (shown in blue square markers). The conturs show the surface of values of the objective function, with lower values darker. The points shown for both algorithms include all trial points, not only the accepted ones. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, 0)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;We next run on the same two examples with randomized initial simplex
+points, uniformly distributed over the surface of the unit sphere, for
+100,000 times. Figure 3 shows the number of function calls
+that were needed to reach the stopping condition. For the first problem
+both implementations perform similarly, with the “correct” one needing
+slightly fewer function calls. They both also converge to the true
+minimum as shown in Fig. 4.&lt;/p&gt;
+&lt;p&gt;For the second problem, we can see that not only does it need many more
+function calls to reach convergence (nearly an order of magnitude more),
+but also does the naive algorithm not find the minimum in most cases.
+The behaviour of the correct implementation, however, is virtually
+unchanged between both problems—as expected.&lt;/p&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig. 3a: Number of function calls to reach convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at \((\theta, \varphi) = (\pi/2, \pi)\))" src="https://philippeller.github.io/spherical_opt/calls_good.png"&gt;&lt;figcaption&gt;Fig. 3a: Number of function calls to reach convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, \pi)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig. 3b: Number of function calls to reach convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at \((\theta, \varphi) = (\pi/2, 0)\))" src="https://philippeller.github.io/spherical_opt/calls_bad.png"&gt; &lt;figcaption&gt;Fig. 3b: Number of function calls to reach convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, 0)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig. 4a: Angular distance to true minimum of best point after reaching convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at \((\theta, \varphi) = (\pi/2, \pi)\))" src="https://philippeller.github.io/spherical_opt/dist_good.png"&gt;&lt;figcaption&gt;Fig. 4a: Angular distance to true minimum of best point after reaching convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, \pi)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;figure id="attach"&gt;&lt;img alt="Fig 4b: Angular distance to true minimum of best point after reaching convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at \((\theta, \varphi) = (\pi/2, 0)\))" src="https://philippeller.github.io/spherical_opt/dist_bad.png"&gt;&lt;figcaption&gt;Fig 4b: Angular distance to true minimum of best point after reaching convergence, for 100,000 runs of both algorithms with a random choice of the 3 starting points for every run. (True minimum at &lt;span class="math"&gt;\((\theta, \varphi) = (\pi/2, 0)\)&lt;/span&gt;)&lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;h1&gt;Conclusions&lt;/h1&gt;
+&lt;p&gt;For a non-Euclidean parameter space of a function that needs to be
+minimized, special care must be taken for the operations of simplex
+based optimizes. In particular, the calculation of midpoints and
+reflections need to be correctly adapted. While in some cases a standard
+implementation can work, it will exhibit a dependence on the choice of
+the orientation of the coordinate system, which is a very undesirable
+behaviour. Adapting the algorithm correctly however removed such
+dependencies naturally, and also performs at least as good and fast or
+better. Similar adaptations for different coordinate systems can be made
+in analogy.&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/latest.js?config=TeX-AMS-MML_HTMLorMML';
+
+    var configscript = document.createElement('script');
+    configscript.type = 'text/x-mathjax-config';
+    configscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'none' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        fonts: [['STIX', 'TeX']]," +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(configscript);
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content></entry><entry><title>Quadtree partitioning</title><link href="https://philippeller.github.io/quadtree-partitioning.html" rel="alternate"></link><published>2019-06-09T00:00:00+02:00</published><updated>2019-06-09T00:00:00+02:00</updated><author><name>Philipp Eller</name></author><id>tag:philippeller.github.io,2019-06-09:/quadtree-partitioning.html</id><summary type="html">
 &lt;div class="cell border-box-sizing text_cell rendered"&gt;&lt;div class="prompt input_prompt"&gt;
 &lt;/div&gt;&lt;div class="inner_cell"&gt;
 &lt;div class="text_cell_render border-box-sizing rendered_html"&gt;
