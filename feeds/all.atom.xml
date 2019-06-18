@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Andromediary</title><link href="https://philippeller.github.io/" rel="alternate"></link><link href="https://philippeller.github.io/feeds/all.atom.xml" rel="self"></link><id>https://philippeller.github.io/</id><updated>2019-06-16T00:00:00+02:00</updated><entry><title>Simplex-based optimization in spherical coordinates</title><link href="https://philippeller.github.io/simplex-based-optimization-in-spherical-coordinates.html" rel="alternate"></link><published>2019-06-16T00:00:00+02:00</published><updated>2019-06-16T00:00:00+02:00</updated><author><name>Philipp Eller</name></author><id>tag:philippeller.github.io,2019-06-16:/simplex-based-optimization-in-spherical-coordinates.html</id><summary type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Andromediary</title><link href="https://philippeller.github.io/" rel="alternate"></link><link href="https://philippeller.github.io/feeds/all.atom.xml" rel="self"></link><id>https://philippeller.github.io/</id><updated>2019-06-16T00:00:00+02:00</updated><entry><title>Simplex-based optimization in spherical coordinates</title><link href="https://philippeller.github.io/simplex-based-optimization-in-spherical-coordinates.html" rel="alternate"></link><published>2019-06-16T00:00:00+02:00</published><updated>2019-06-16T00:00:00+02:00</updated><author><name>Philipp Eller</name></author><id>tag:philippeller.github.io,2019-06-16:/simplex-based-optimization-in-spherical-coordinates.html</id><summary type="html">&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
 simplex based algorithms are a popular choice. In particular the
 &lt;a href="https://doi.org/10.1093/comjnl/7.4.308"&gt;Nelder-Mead method&lt;/a&gt; is widely used for local
 optimization and also serves as the example in this article, other
-variants include the controlled random search (&lt;a href="https://doi.org/10.1007/BF00933504"&gt;CRS&lt;/a&gt; and &lt;a href="https://doi.org/10.1007/s10957-006-9101-0"&gt;CRS2&lt;/a&gt;) or Constrained Optimization by …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
+variants include the controlled random search (&lt;a href="https://doi.org/10.1007/BF00933504"&gt;CRS&lt;/a&gt; and &lt;a href="https://doi.org/10.1007/s10957-006-9101-0"&gt;CRS2&lt;/a&gt;) or Constrained Optimization by Linear …&lt;/p&gt;</summary><content type="html">&lt;p&gt;For gradient-free optimization of an objective (scalar) function,
 simplex based algorithms are a popular choice. In particular the
 &lt;a href="https://doi.org/10.1093/comjnl/7.4.308"&gt;Nelder-Mead method&lt;/a&gt; is widely used for local
 optimization and also serves as the example in this article, other
@@ -191,6 +189,7 @@ behaviour. Adapting the algorithm correctly however removed such
 dependencies naturally, and also performs at least as good and fast or
 better. Similar adaptations for different coordinate systems can be made
 in analogy.&lt;/p&gt;
+&lt;p&gt;The implementation is made available as a package &lt;a href="https://github.com/philippeller/spherical_opt"&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -218,7 +217,7 @@ in analogy.&lt;/p&gt;
         "    displayAlign: '"+ align +"'," +
         "    displayIndent: '"+ indent +"'," +
         "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
+        "    messageStyle: 'none'," +
         "    tex2jax: { " +
         "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
         "        displayMath: [ ['$$','$$'] ]," +

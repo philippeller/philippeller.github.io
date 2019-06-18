@@ -65,8 +65,7 @@
 <div class="post">
 	<h1 class="post-title">Simplex-based optimization in spherical coordinates</h1>
 	<span class="post-date">Sun 16 June 2019</span>
-	<h1>Introduction</h1>
-<p>For gradient-free optimization of an objective (scalar) function,
+	<p>For gradient-free optimization of an objective (scalar) function,
 simplex based algorithms are a popular choice. In particular the
 <a href="https://doi.org/10.1093/comjnl/7.4.308">Nelder-Mead method</a> is widely used for local
 optimization and also serves as the example in this article, other
@@ -252,6 +251,7 @@ behaviour. Adapting the algorithm correctly however removed such
 dependencies naturally, and also performs at least as good and fast or
 better. Similar adaptations for different coordinate systems can be made
 in analogy.</p>
+<p>The implementation is made available as a package <a href="https://github.com/philippeller/spherical_opt">here</a>.</p>
 <script type="text/javascript">if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
     var align = "center",
         indent = "0em",
@@ -279,7 +279,7 @@ in analogy.</p>
         "    displayAlign: '"+ align +"'," +
         "    displayIndent: '"+ indent +"'," +
         "    showMathMenu: true," +
-        "    messageStyle: 'normal'," +
+        "    messageStyle: 'none'," +
         "    tex2jax: { " +
         "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
         "        displayMath: [ ['$$','$$'] ]," +
