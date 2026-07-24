@@ -2,16 +2,16 @@
 <html lang="en">
 
   <!-- Head -->
-  <head><meta http-equiv="refresh" content="3; url=https://philippeller.github.io/" />    <!-- Metadata, OpenGraph and Schema.org -->
+  <head>    <!-- Metadata, OpenGraph and Schema.org -->
     
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Philipp  Eller | Page not found</title>
+    <title>Philipp  Eller | MCMC</title>
     <meta name="author" content="Philipp  Eller" />
-    <meta name="description" content="Looks like there has been a mistake. Nothing exists here." />
+    <meta name="description" content="New methods for Markov chain Monte Carlo sampling" />
     <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website" />
 
 
@@ -32,7 +32,7 @@
     <link rel="shortcut icon" href="/assets/img/nu.png"/>
     
     <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="canonical" href="https://philippeller.github.io/404.html">
+    <link rel="canonical" href="https://philippeller.github.io/projects/mcmc/">
     
     <!-- Dark Mode -->
     
@@ -91,12 +91,46 @@
         <div class="post">
 
           <header class="post-header">
-            <h1 class="post-title">Page not found</h1>
-            <p class="post-description">Looks like there has been a mistake. Nothing exists here.</p>
+            <h1 class="post-title">MCMC</h1>
+            <p class="post-description">New methods for Markov chain Monte Carlo sampling</p>
           </header>
 
           <article>
-            <p>You will be redirected to the main page within 3 seconds. If not redirected, please click <a href="https://philippeller.github.io/">here</a>.</p>
+            <p>Sampling from arbitrary distributions, that are usually not analytically available, can be a challenging but important task.
+For example in the context of Bayesian inference, drawing samples from the posterior is the go-to method to characterize this otherwise inaccessible distribution. Furthermore, calculating integral values of unnormalized distributions, for example the Bayesian “evidence” (i.e. marginal likelihood) is a key ingredient to model comparison.</p>
+
+<p>In our paper “Integration with an Adaptive Harmonic Mean Algorithm” we introduce a technique that can reliably estimate integrals and uncertainties over a set of available samples, without any need to generate new samples.</p>
+
+<p>In our more recent work “Parallelizing MCMC Sampling via Space Partitioning” we use the above technique together with a space-partitioning scheme to parallelize the otherwise inherently serial Markov chain process. By doing so we can achieve super-linear scaling with the number of workers.</p>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/space_partitionaing-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/space_partitionaing-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/space_partitionaing-1400.webp"></source>
+    <!-- Fallback to the original file -->
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/space_partitionaing.png" title="example image">
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+Illustration for the space partitioning algorithm sampling a multi-modal density. (1) initial exploration phase, (2) partitioning of the space, (3) sampling of individual sub-spaces, (4) re-weighting and stitching back together individual samples
+</div>
+
+<h2 id="further-information">Further Information</h2>
+
+<p>Collaborators: Prof. Dr. Allen Caldwell (MPP), Dr. Vasyl Hafytch (MPP), Dr. Oliver Schulz (MPP)</p>
+
+<p>Paper on the adaptive harmonic integration: <a href="https://arxiv.org/abs/1808.08051" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/1808.08051</a></p>
+
+<p>Paper on the parallel MCMC via space partitioning: <a href="https://arxiv.org/abs/2008.03098" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/2008.03098</a></p>
 
           </article>
 

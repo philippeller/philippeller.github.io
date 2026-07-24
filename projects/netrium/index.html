@@ -2,16 +2,16 @@
 <html lang="en">
 
   <!-- Head -->
-  <head><meta http-equiv="refresh" content="3; url=https://philippeller.github.io/" />    <!-- Metadata, OpenGraph and Schema.org -->
+  <head>    <!-- Metadata, OpenGraph and Schema.org -->
     
 
     <!-- Standard metadata -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Philipp  Eller | Page not found</title>
+    <title>Philipp  Eller | Netrium</title>
     <meta name="author" content="Philipp  Eller" />
-    <meta name="description" content="Looks like there has been a mistake. Nothing exists here." />
+    <meta name="description" content="Fast and Precise Model Predictions for the KATRIN Experiment" />
     <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website" />
 
 
@@ -32,7 +32,7 @@
     <link rel="shortcut icon" href="/assets/img/nu.png"/>
     
     <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="canonical" href="https://philippeller.github.io/404.html">
+    <link rel="canonical" href="https://philippeller.github.io/projects/netrium/">
     
     <!-- Dark Mode -->
     
@@ -91,12 +91,98 @@
         <div class="post">
 
           <header class="post-header">
-            <h1 class="post-title">Page not found</h1>
-            <p class="post-description">Looks like there has been a mistake. Nothing exists here.</p>
+            <h1 class="post-title">Netrium</h1>
+            <p class="post-description">Fast and Precise Model Predictions for the KATRIN Experiment</p>
           </header>
 
           <article>
-            <p>You will be redirected to the main page within 3 seconds. If not redirected, please click <a href="https://philippeller.github.io/">here</a>.</p>
+            <div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/katrin-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/katrin-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/katrin-1400.webp"></source>
+    <!-- Fallback to the original file -->
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/katrin.png" title="example image">
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    Sketch of the Karlsruhe Tritium Neutrino (KATRIN) experiment
+</div>
+
+<p>The main goal of the Karlsruhe Tritium Neutrino (KATRIN) experiment is to measure the absolute neutrino mass scale. To do so, precise predictions of the measurement spectrum as a function of the anti-electron neutrino mass, and a multitude of parameters describing systematic uncertainties, are needed.
+The calculations needed to make such predictions are computationally very costly and hence prohibitive for using sophisticated statistical methods for the analysis of the neutrino mass.</p>
+
+<p>By per-calculating spectra over a range of intelligently chosen points in the parameter space, and then interpolating between with a deep neural network, we manage to predict spectra with very high accuracy at a fraction of the original cost.
+This does not only allow to run the same analyses much faster but puts us into a position to analyze all of KATRIN data, including a full suite of systematic uncertainties, in a combined fit. Also, techniques such as fully-fledged MCMC sampling become possible.</p>
+
+<p>In our recent paper that is currently under review at the European Physics Journal C (EPJ-C), we show that we can reproduce the official results of the first two KATRIN measurement campaigns with great agreement, and at a fraction of the cost.</p>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/katrin_spectrum-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/katrin_spectrum-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/katrin_spectrum-1400.webp"></source>
+    <!-- Fallback to the original file -->
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/katrin_spectrum.png" title="example image">
+
+  </picture>
+
+</figure>
+
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/katrin_nn_aprx-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/katrin_nn_aprx-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/katrin_nn_aprx-1400.webp"></source>
+    <!-- Fallback to the original file -->
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/katrin_nn_aprx.png" title="example image">
+
+  </picture>
+
+</figure>
+
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/katrin_nn_impact-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/katrin_nn_impact-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/katrin_nn_impact-1400.webp"></source>
+    <!-- Fallback to the original file -->
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/katrin_nn_impact.png" title="example image">
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    (left) The KATRIN measurement spectrum for a few choices of the electron neutrino rest mass (middle) NN approximation of the KATRIN spectrum (right) impact of the NN approximation compared to the statistical uncertainty of the fit.
+</div>
+
+<h2 id="further-information">Further Information</h2>
+
+<p>Collaborators: Prof. Dr. Susanne Mertens (MPP/TUM), Christian Karl (MPP)</p>
+
+<p>Paper available here: <a href="https://arxiv.org/abs/2201.04523" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/2201.04523</a></p>
+
+<p>A continuation of the project is currently funded by the Munich Data Science Institute (MDSI): <a href="https://www.mdsi.tum.de/en/mdsi/research/seed-funds-2021/netrium/" target="_blank" rel="noopener noreferrer">https://www.mdsi.tum.de/en/mdsi/research/seed-funds-2021/netrium/</a></p>
 
           </article>
 
