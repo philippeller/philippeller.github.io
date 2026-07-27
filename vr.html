@@ -1,149 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> vr/ar | Philipp Eller </title> <meta name="author" content="Philipp Eller"> <meta name="description" content="An interactive AR/VR visualization of IceCube neutrino events."> <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 930px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="/assets/img/nu.png?v=b965a734c7fc28cbbb92f4a326fb1597"> <link rel="stylesheet" href="/assets/css/main.css?v=f0b101217084a90093badfe99ff9a7d1"> <link rel="canonical" href="https://philippeller.github.io/vr.html"> <script src="/assets/js/theme.js?v=7af685e2ba20b37fef545c97b8064050"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> <span class="font-weight-bold">Philipp</span> Eller </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">about </a> </li> <li class="nav-item "> <a class="nav-link" href="/osc.html">oscillogram </a> </li> <li class="nav-item active"> <a class="nav-link" href="/vr.html">vr/ar <span class="sr-only">(current)</span> </a> </li> <li class="nav-item "> <a class="nav-link" href="/projects/">projects </a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">selected publications </a> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="post"> <header class="post-header"> <h1 class="post-title">vr/ar</h1> <p class="post-description">An interactive AR/VR visualization of IceCube neutrino events.</p> </header> <article> <style>
+/* This is a fullscreen AR/VR experience - the site footer has no role here. */
+footer { display: none !important; }
 
-  <!-- Head -->
-  <head>    <!-- Metadata, OpenGraph and Schema.org -->
-    
-
-    <!-- Standard metadata -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Philipp  Eller | vr/ar</title>
-    <meta name="author" content="Philipp  Eller" />
-    <meta name="description" content="An interactive AR/VR visualization of IceCube neutrino events." />
-    <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website" />
-
-
-    <!-- Bootstrap & MDB -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
-
-    <!-- Fonts & Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
-
-    <!-- Code Syntax Highlighting -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" media="none" id="highlight_theme_light" />
-
-    <!-- Styles -->
-    
-    <link rel="shortcut icon" href="/assets/img/nu.png"/>
-    
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="canonical" href="https://philippeller.github.io/vr.html">
-    
-    <!-- Dark Mode -->
-    
-
-  </head>
-
-  <!-- Body -->
-  <body class="fixed-top-nav sticky-bottom-footer">
-
-    <!-- Header -->
-    <header>
-
-      <!-- Nav Bar -->
-      <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top">
-        <div class="container">
-          <a class="navbar-brand title font-weight-lighter" href="https://philippeller.github.io/"><span class="font-weight-bold">Philipp</span>   Eller</a>
-          <!-- Navbar Toggle -->
-          <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar top-bar"></span>
-            <span class="icon-bar middle-bar"></span>
-            <span class="icon-bar bottom-bar"></span>
-          </button>
-
-          <div class="collapse navbar-collapse text-right" id="navbarNav">
-            <ul class="navbar-nav ml-auto flex-nowrap">
-
-              <!-- About -->
-              <li class="nav-item ">
-                <a class="nav-link" href="/">about</a>
-              </li>
-              
-
-              <!-- Other pages -->
-              <li class="nav-item ">
-                <a class="nav-link" href="/osc.html">oscillogram</a>
-              </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="/vr.html">vr/ar<span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item ">
-                <a class="nav-link" href="/projects/">projects</a>
-              </li>
-              <li class="nav-item ">
-                <a class="nav-link" href="/publications/">selected publications</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </header>
-
-    <!-- Content -->
-    <div class="container mt-5">
-      <!-- page.html -->
-        <div class="post">
-
-          <header class="post-header">
-            <h1 class="post-title">vr/ar</h1>
-            <p class="post-description">An interactive AR/VR visualization of IceCube neutrino events.</p>
-          </header>
-
-          <article>
-            <div id="vr-fallback" style="display:none;">
-  <p>
-  This content only works on a <strong>Meta Quest 3</strong> (or Quest Pro) with color passthrough AR support, opened in the Meta Quest Browser — it can't be viewed on this device. Here's a short preview of what it looks like:
-  </p>
-  <img src="/assets/img/Animation2.gif" alt="Preview of the IceCube AR neutrino event visualization" class="img-fluid rounded z-depth-1">
-</div>
-
-<div id="vr-ar-content" style="display:none;">
-
-  <div id="vr-ar-instructions" style="position:relative; z-index:1;">
-
-    <p>
-    This is an augmented reality visualization of real IceCube neutrino events, built with <a href="https://aframe.io/" target="_blank" rel="noopener noreferrer">A-Frame</a> and WebXR. It renders the actual DeepCore string geometry and lets you step inside a neutrino interaction: the colored spheres are photon hits recorded by the detector's optical sensors, colored by arrival time. You can walk around and through the detector, scale and reposition it in your room, and try to guess the neutrino's direction from the pattern of hits before revealing the true direction.
-    </p>
-
-    <p>
-    <strong>Requires a Meta Quest 3 (or Quest Pro)</strong> with color passthrough AR support, opened in the Meta Quest Browser.
-    </p>
-
-    <p>Once in AR:</p>
-    <ul>
-      <li>
-<strong>Both triggers (held together):</strong> move, rotate, and scale the detector — pull your hands apart to scale it up, twist to rotate, and move both hands to reposition it.</li>
-      <li>
-<strong>Right thumbstick:</strong> rotate the detector left/right.</li>
-      <li>
-<strong>Both grip buttons (held together):</strong> aim a light-blue line between your controllers to mark your guess of the neutrino's direction.</li>
-      <li>
-<strong>X button (left controller):</strong> reveal the true neutrino direction (magenta line) and compare it to your guess.</li>
-      <li>
-<strong>A button (right controller):</strong> load the next neutrino event.</li>
-      <li>
-<strong>Y button (left controller):</strong> skip the in-headset tutorial hints.</li>
-      <li>
-<strong>B button (right controller):</strong> exit AR.</li>
-    </ul>
-
-    <p class="text-center">
-      <a id="myEnterARButton" href="#" class="btn btn-danger btn-lg" style="min-width:250px;">Enter AR</a>
-    </p>
-
-  </div>
-
-  <div id="ar-scene-mount"></div>
-
-</div>
-
-<style>
+/* Bootstrap's .btn-danger has no CSS backing under the Tailwind-based theme
+   (bootstrap compat is off by default), so style this call-to-action button
+   directly instead of relying on it. */
+#myEnterARButton {
+  display: inline-block;
+  min-width: 250px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  color: #fff;
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 0.3rem;
+  text-decoration: none;
+}
+#myEnterARButton:hover {
+  color: #fff;
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+  text-decoration: none;
+}
+</style> <div id="vr-fallback" style="display:none;"> <p> This content only works on a <strong>Meta Quest 3</strong> (or Quest Pro) with color passthrough AR support, opened in the Meta Quest Browser — it can't be viewed on this device. Here's a short preview of what it looks like: </p> <img src="/assets/img/Animation2.gif" alt="Preview of the IceCube AR neutrino event visualization" class="img-fluid rounded z-depth-1"> </div> <div id="vr-ar-content" style="display:none;"> <div id="vr-ar-instructions" style="position:relative; z-index:1;"> <p> This is an augmented reality visualization of real IceCube neutrino events, built with <a href="https://aframe.io/" rel="external nofollow noopener" target="_blank">A-Frame</a> and WebXR. It renders the actual detector string geometry and lets you step inside a neutrino interaction: the colored spheres are photon hits recorded by the detector's optical sensors, colored by arrival time. You can walk around and through the detector, scale and reposition it in your room, and try to guess the neutrino's direction from the pattern of hits before revealing the true direction. </p> <p> <strong>Requires a Meta Quest 3 (or Quest Pro)</strong> with color passthrough AR support, opened in the Meta Quest Browser. </p> <p>Once in AR:</p> <ul> <li> <strong>Both triggers (held together):</strong> move, rotate, and scale the detector — pull your hands apart to scale it up, twist to rotate, and move both hands to reposition it.</li> <li> <strong>Right thumbstick:</strong> rotate the detector left/right.</li> <li> <strong>Both grip buttons (held together):</strong> aim a light-blue line between your controllers to mark your guess of the neutrino's direction.</li> <li> <strong>X button (left controller):</strong> reveal the true neutrino direction (magenta line) and compare it to your guess.</li> <li> <strong>A button (right controller):</strong> load the next neutrino event.</li> <li> <strong>Y button (left controller):</strong> skip the in-headset tutorial hints.</li> <li> <strong>B button (right controller):</strong> exit AR.</li> </ul> <p class="text-center"> <a id="myEnterARButton" href="#">Enter AR</a> </p> </div> <div id="ar-scene-mount"></div> </div> <style>
 /* This page only ever needs the in-headset AR view, never the flat on-page
    preview A-Frame renders by default (both before entering AR and after
    exiting) - keep that canvas permanently invisible and non-interactive so
@@ -152,44 +39,7 @@
   opacity: 0 !important;
   pointer-events: none !important;
 }
-</style>
-
-<template id="ar-scene-template">
-<a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene">
-
-
-
-  <a-entity test></a-entity>
-
-  <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false" hand-controls-left>
-  </a-entity>
-  <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false" hand-controls-right>
-  </a-entity>
-
-<a-entity id="env" visible="false">
-
-<a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder>
-
-<a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder>
-
-</a-entity>
-
-<a-entity camera>
-
-    <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4">
-    </a-text>
-
-  <!-- Background plane behind the text -->
-  <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane>
-
-   <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false">
-
- </a-text></a-entity>
-
-</a-scene>
-</template>
-
-<script>
+</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false" hand-controls-left> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false" hand-controls-right> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
 (function () {
   var arContent = document.getElementById('vr-ar-content');
   var fallback = document.getElementById('vr-fallback');
@@ -205,10 +55,12 @@
   }
 
   function showFallback() {
+    arContent.style.display = 'none';
     fallback.style.display = 'block';
   }
 
   function showAR() {
+    fallback.style.display = 'none';
     arContent.style.display = 'block';
     loadScript('https://aframe.io/releases/1.5.0/aframe.min.js')
       .then(function () { return loadScript('https://d3js.org/d3.v7.js'); })
@@ -317,6 +169,7 @@
         this.rightGripPressed = false;
 
         this.scene.addEventListener("enter-vr", this.enter.bind(this));
+        this.scene.addEventListener("exit-vr", this.reset.bind(this));
 
 
         // Variables to track previous positions of the controllers
@@ -360,6 +213,36 @@
 
       exit: function (evt) {
         this.scene.exitVR();
+      },
+      reset: function (evt) {
+        this.msg_count = 0;
+        this.file_index = 0;
+        this.recoed = false;
+        this.moving = false;
+        this.leftTriggerPressed = false;
+        this.rightTriggerPressed = false;
+        this.leftGripPressed = false;
+        this.rightGripPressed = false;
+        this.thumbstickX = 0;
+        this.thumbstickY = 0;
+
+        this.detector.object3D.position.set(0, 0, 0);
+        this.detector.object3D.rotation.set(0, 0, 0);
+        this.detector.object3D.scale.set(1, 1, 1);
+
+        this.truth.setAttribute("visible", false);
+        this.reco.setAttribute("visible", false);
+
+        var msg = document.getElementById('msg');
+        var bkg = document.getElementById('textBackground');
+        msg.removeAttribute("animation__t1");
+        msg.removeAttribute("animation__t2");
+        msg.setAttribute("opacity", 1);
+        msg.setAttribute("visible", true);
+        bkg.removeAttribute("animation__t1");
+        bkg.removeAttribute("animation__t2");
+        bkg.setAttribute("opacity", 0.5);
+        bkg.setAttribute("visible", true);
       },
       skip: function (evt) {
         this.msg_count = 100;
@@ -560,45 +443,10 @@
     document.getElementById('ar-scene-mount').appendChild(tpl.content.cloneNode(true));
   }
 })();
-</script>
-
-          </article>
-
-        </div>
-
-    </div>
-
-    <!-- Footer --><!-- JavaScripts -->
-    <!-- jQuery -->
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
-    <!-- Bootsrap & MDB scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.2/dist/umd/popper.min.js" integrity="sha256-l/1pMF/+J4TThfgARS6KwWrk/egwuVvhRzfLAMQ6Ds4=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha256-SyTu6CwrfOhaznYZPoolVw2rxoY7lKYKQvqbtqN93HI=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
-
-    <!-- Masonry & imagesLoaded -->
-  <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
-  <script defer src="/assets/js/masonry.js" type="text/javascript"></script>
-    
-  <!-- Medium Zoom JS -->
-  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js" integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
-  <script src="/assets/js/zoom.js"></script><!-- Load Common JS -->
-  <script src="/assets/js/common.js"></script>
-
-    <!-- MathJax -->
-  <script type="text/javascript">
-    window.MathJax = {
-      tex: {
-        tags: 'ams'
-      }
-    };
-  </script>
-  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
-  <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-
-    
-  </body>
-</html>
-
+</script> </article> </div> </div> <footer class="sticky-bottom mt-5" role="contentinfo"> <div class="container"> © Copyright 2026 Philipp Eller. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script defer src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6" crossorigin="anonymous"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> </body> </html>
