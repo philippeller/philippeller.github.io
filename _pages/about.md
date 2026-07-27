@@ -1,23 +1,31 @@
 ---
 layout: about
-title: About
+title: about
 permalink: /
-nav: false
 subtitle: <a href='https://www.tum.de/'>TU Munich</a>, Department of Physics, <a href="https://www.ph.nat.tum.de/cosmic-particles/experimental-physics-with-cosmic-particles/">Experimental Physics with Cosmic Particles</a>
 
 profile:
   align: right
   image: southpole.jpg
-  address: >
+  image_circular: false # crops the image to make it circular
+  more_info: >
     <p>Room 2019</p>
     <p>James-Franck-Straße 1</p>
     <p>D-85748, Garching bei München</p>
 
-news: false # includes a list of news items
 selected_papers: false # includes a list of papers marked as "selected={true}"
-social: true  # includes social icons at the bottom of the page
----
+social: true # includes social icons at the bottom of the page
 
+announcements:
+  enabled: false # includes a list of news items
+  scrollable: true # adds a vertical scroll bar if there are more than 3 news items
+  limit: 5 # leave blank to include all the news in the `_news` folder
+
+latest_posts:
+  enabled: false
+  scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
+  limit: 3 # leave blank to include all the blog posts
+---
 
 Neutrinos are the most abundant constituents of matter in our universe, and at the same time the least well known. With large scale experiments, such as the IceCube Neutrino Observatory at the South Pole, we collect data to better understand these elusive particles, and to uncover long standing mysteries.
 With the usage of cutting edge technology and methods, such as modem machine learning aided data science, I want to extract as much knowledge out of our data as possible.

@@ -5,8 +5,35 @@ permalink: /vr.html
 description: An interactive AR/VR visualization of IceCube neutrino events.
 nav: true
 nav_order: 2
-hide_footer: true
 ---
+
+<style>
+/* This is a fullscreen AR/VR experience - the site footer has no role here. */
+footer { display: none !important; }
+
+/* Bootstrap's .btn-danger has no CSS backing under the Tailwind-based theme
+   (bootstrap compat is off by default), so style this call-to-action button
+   directly instead of relying on it. */
+#myEnterARButton {
+  display: inline-block;
+  min-width: 250px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-align: center;
+  color: #fff;
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 0.3rem;
+  text-decoration: none;
+}
+#myEnterARButton:hover {
+  color: #fff;
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+  text-decoration: none;
+}
+</style>
 
 <div id="vr-fallback" style="display:none;">
   <p>
@@ -20,7 +47,7 @@ hide_footer: true
   <div id="vr-ar-instructions" style="position:relative; z-index:1;">
 
     <p>
-    This is an augmented reality visualization of real IceCube neutrino events, built with <a href="https://aframe.io/">A-Frame</a> and WebXR. It renders the actual DeepCore string geometry and lets you step inside a neutrino interaction: the colored spheres are photon hits recorded by the detector's optical sensors, colored by arrival time. You can walk around and through the detector, scale and reposition it in your room, and try to guess the neutrino's direction from the pattern of hits before revealing the true direction.
+    This is an augmented reality visualization of real IceCube neutrino events, built with <a href="https://aframe.io/">A-Frame</a> and WebXR. It renders the actual detector string geometry and lets you step inside a neutrino interaction: the colored spheres are photon hits recorded by the detector's optical sensors, colored by arrival time. You can walk around and through the detector, scale and reposition it in your room, and try to guess the neutrino's direction from the pattern of hits before revealing the true direction.
     </p>
 
     <p>
@@ -39,7 +66,7 @@ hide_footer: true
     </ul>
 
     <p class="text-center">
-      <a id="myEnterARButton" href="#" class="btn btn-danger btn-lg" style="min-width:250px;">Enter AR</a>
+      <a id="myEnterARButton" href="#">Enter AR</a>
     </p>
 
   </div>
@@ -114,7 +141,7 @@ hide_footer: true
       align="center"
       scale="1.5 1.5 1.5"
       visible="false"
-    </a-text>
+    ></a-text>
 
  </a-entity>
 
@@ -137,10 +164,12 @@ hide_footer: true
   }
 
   function showFallback() {
+    arContent.style.display = 'none';
     fallback.style.display = 'block';
   }
 
   function showAR() {
+    fallback.style.display = 'none';
     arContent.style.display = 'block';
     loadScript('https://aframe.io/releases/1.5.0/aframe.min.js')
       .then(function () { return loadScript('https://d3js.org/d3.v7.js'); })
@@ -249,6 +278,7 @@ hide_footer: true
         this.rightGripPressed = false;
 
         this.scene.addEventListener("enter-vr", this.enter.bind(this));
+        this.scene.addEventListener("exit-vr", this.reset.bind(this));
 
 
         // Variables to track previous positions of the controllers
@@ -292,6 +322,36 @@ hide_footer: true
 
       exit: function (evt) {
         this.scene.exitVR();
+      },
+      reset: function (evt) {
+        this.msg_count = 0;
+        this.file_index = 0;
+        this.recoed = false;
+        this.moving = false;
+        this.leftTriggerPressed = false;
+        this.rightTriggerPressed = false;
+        this.leftGripPressed = false;
+        this.rightGripPressed = false;
+        this.thumbstickX = 0;
+        this.thumbstickY = 0;
+
+        this.detector.object3D.position.set(0, 0, 0);
+        this.detector.object3D.rotation.set(0, 0, 0);
+        this.detector.object3D.scale.set(1, 1, 1);
+
+        this.truth.setAttribute("visible", false);
+        this.reco.setAttribute("visible", false);
+
+        var msg = document.getElementById('msg');
+        var bkg = document.getElementById('textBackground');
+        msg.removeAttribute("animation__t1");
+        msg.removeAttribute("animation__t2");
+        msg.setAttribute("opacity", 1);
+        msg.setAttribute("visible", true);
+        bkg.removeAttribute("animation__t1");
+        bkg.removeAttribute("animation__t2");
+        bkg.setAttribute("opacity", 0.5);
+        bkg.setAttribute("visible", true);
       },
       skip: function (evt) {
         this.msg_count = 100;
