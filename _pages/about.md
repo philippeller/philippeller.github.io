@@ -9,7 +9,7 @@ profile:
   image: southpole.jpg
   image_circular: false # crops the image to make it circular
   more_info: >
-    <p>Room 2019</p>
+    <p>Room 2037</p>
     <p>James-Franck-Straße 1</p>
     <p>D-85748, Garching bei München</p>
 
@@ -38,7 +38,21 @@ As a scientist I am working mostly on, and am interested in:
 The [projects page](/projects/) describes some of my current and recent works.
 
 I am a:
-* Member of the <a href="https://icecube.wisc.edu/">IceCube collaboration</a> and convener of oscillation physics
-* PI in the <a href="https://www.sfb1258.de/">Collaborative Research Center 1258</a>
-* Member of the <a href="https://www.punch4nfdi.de/">PUNCH4NFDI</a> consortium
-* Fellow of the <a href="https://www.origins-cluster.de/infrastruktur/odsl">Origins Data Science Lab</a>
+* Member of the <a href="https://icecube.wisc.edu/">IceCube collaboration</a> and Deputy Analysis Coordinator
+
+I am a PI in:
+* the <a href="https://www.sfb1258.de/">Collaborative Research Center 1258</a>
+* the <a href="https://www.punch4nfdi.de/">PUNCH4NFDI</a> consortium
+* the <a href="https://www.origins-cluster.de/">Excellence Cluster ORIGINS</a>, coordinating the Research Unit "Particles and the Cosmos" and its Data Center
+* the ErUM-Data project DEMOS
+
+<div style="position: relative; width: 100%; aspect-ratio: 16 / 9; margin-top: 1.5rem;">
+  <iframe
+    src="https://www.youtube.com/embed/JQp6IDl6Vm4"
+    title="YouTube video player"
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+</div>
