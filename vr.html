@@ -39,7 +39,7 @@ footer { display: none !important; }
   opacity: 0 !important;
   pointer-events: none !important;
 }
-</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false"> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false"> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="white" align="center" scale="0.5 0.5 0.5" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
+</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false"> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false"> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angleScore" position="0 0.65 -2" value="" color="white" align="center" scale="0.8 0.8 0.8" visible="false"></a-text> <a-text id="angleLabel" position="0 0.45 -2" value="Difference between true direction and guess." color="white" align="center" scale="0.3 0.3 0.3" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
 (function () {
   var arContent = document.getElementById('vr-ar-content');
   var fallback = document.getElementById('vr-fallback');
@@ -82,6 +82,174 @@ footer { display: none !important; }
     var xscale = 0.0015;
     var numEvents = 3;
 
+    // Synthesizes and plays all sound effects with the Web Audio API directly
+    // (no external audio assets to fetch on the headset). Ambient drone and
+    // one-shot UI cues are non-positional; hit "plops" are spatialized via
+    // THREE.PositionalAudio so they seem to come from each sensor.
+    var Sound = {
+      ctx: null,
+      listener: null,
+      masterGain: null,
+      ambientGain: null,
+      ambientNodes: null,
+      plopBuffer: null,
+      activeHitVoices: 0,
+      maxHitVoices: 8,
+
+      init: function (listener) {
+        if (this.ctx) return;
+        this.listener = listener;
+        this.ctx = listener.context;
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = 0.6;
+        this.masterGain.connect(this.ctx.destination);
+        this.plopBuffer = this.createPlopBuffer();
+      },
+
+      createPlopBuffer: function () {
+        var duration = 0.18;
+        var sampleRate = this.ctx.sampleRate;
+        var length = Math.floor(duration * sampleRate);
+        var buffer = this.ctx.createBuffer(1, length, sampleRate);
+        var data = buffer.getChannelData(0);
+        for (var i = 0; i < length; i++) {
+          var t = i / sampleRate;
+          var freq = 900 * Math.pow(300 / 900, t / duration);
+          var envelope = Math.exp(-t * 18);
+          data[i] = Math.sin(2 * Math.PI * freq * t) * envelope;
+        }
+        return buffer;
+      },
+
+      startAmbient: function () {
+        if (this.ambientNodes) return;
+        var ctx = this.ctx;
+        var now = ctx.currentTime;
+
+        var ambientGain = ctx.createGain();
+        ambientGain.gain.value = 0;
+        ambientGain.connect(this.masterGain);
+        ambientGain.gain.linearRampToValueAtTime(0.12, now + 4);
+
+        var filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 700;
+        filter.connect(ambientGain);
+
+        var osc1 = ctx.createOscillator();
+        osc1.type = "triangle";
+        osc1.frequency.value = 55; // A1 drone
+        osc1.connect(filter);
+
+        var osc2 = ctx.createOscillator();
+        osc2.type = "sine";
+        osc2.frequency.value = 82.5; // E2, slightly detuned for slow beating
+        osc2.detune.value = -6;
+        osc2.connect(filter);
+
+        var shimmerGain = ctx.createGain();
+        shimmerGain.gain.value = 0.25;
+        shimmerGain.connect(filter);
+        var osc3 = ctx.createOscillator();
+        osc3.type = "sine";
+        osc3.frequency.value = 220; // high shimmer layer
+        osc3.connect(shimmerGain);
+
+        // Slow LFO on the filter cutoff for a gentle "breathing" swell.
+        var lfo = ctx.createOscillator();
+        lfo.frequency.value = 0.05;
+        var lfoGain = ctx.createGain();
+        lfoGain.gain.value = 300;
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+
+        osc1.start();
+        osc2.start();
+        osc3.start();
+        lfo.start();
+
+        this.ambientGain = ambientGain;
+        this.ambientNodes = [osc1, osc2, osc3, lfo];
+      },
+
+      stopAmbient: function () {
+        if (!this.ambientNodes) return;
+        var ctx = this.ctx;
+        var now = ctx.currentTime;
+        var gain = this.ambientGain;
+        var nodes = this.ambientNodes;
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+        gain.gain.linearRampToValueAtTime(0, now + 1.5);
+        setTimeout(function () {
+          nodes.forEach(function (n) { try { n.stop(); } catch (e) {} });
+        }, 1600);
+        this.ambientNodes = null;
+        this.ambientGain = null;
+      },
+
+      playHit: function (worldPos) {
+        if (!this.ctx || this.activeHitVoices >= this.maxHitVoices) return;
+        this.activeHitVoices++;
+
+        var sceneEl = document.querySelector('a-scene');
+        var sound = new THREE.PositionalAudio(this.listener);
+        sound.setBuffer(this.plopBuffer);
+        sound.setRefDistance(0.3);
+        sound.setRolloffFactor(2);
+        sound.setVolume(0.5);
+        sound.setPlaybackRate(0.85 + Math.random() * 0.3);
+        sound.position.copy(worldPos);
+        sceneEl.object3D.add(sound);
+        sound.play();
+
+        var self = this;
+        setTimeout(function () {
+          sceneEl.object3D.remove(sound);
+          sound.disconnect();
+          self.activeHitVoices--;
+        }, 250);
+      },
+
+      playClick: function () {
+        if (!this.ctx) return;
+        var ctx = this.ctx;
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        osc.type = "square";
+        osc.frequency.value = 1200;
+        var gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + 0.07);
+      },
+
+      playReveal: function () {
+        if (!this.ctx) return;
+        var ctx = this.ctx;
+        var now = ctx.currentTime;
+        var notes = [523.25, 659.25, 783.99, 1046.5]; // C5 E5 G5 C6 - cheerful ta-da
+        var self = this;
+        notes.forEach(function (freq, i) {
+          var start = now + i * 0.09;
+          var osc = ctx.createOscillator();
+          osc.type = "triangle";
+          osc.frequency.value = freq;
+          var gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, start);
+          gain.gain.linearRampToValueAtTime(0.3, start + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+          osc.connect(gain);
+          gain.connect(self.masterGain);
+          osc.start(start);
+          osc.stop(start + 0.4);
+        });
+      }
+    };
+
     function loadCSVData(filePath) {
       d3.csv(filePath).then(function(data) {
 
@@ -107,7 +275,17 @@ footer { display: none !important; }
             .attr("radius", d=>String(Math.pow(d.charge, 1/3)*10*xscale))
             .attr("position", function (d) { return parseFloat(d.x)*xscale + " " + (parseFloat(d.z)+zoffset)*xscale + " " + parseFloat(d.y)*xscale; } )
             .attr("opacity", 0)
-            .attr("animation", function(d) {return "property: opacity; to:1; dur: 10; delay: " + String((d.time-min)/2)});
+            .attr("animation", function(d) {return "property: opacity; to:1; dur: 10; delay: " + String((d.time-min)/2)})
+            .each(function (d) {
+              var el = this;
+              var delayMs = (d.time - min) / 2;
+              setTimeout(function () {
+                if (!el.object3D) return;
+                var worldPos = new THREE.Vector3();
+                el.object3D.getWorldPosition(worldPos);
+                Sound.playHit(worldPos);
+              }, delayMs);
+            });
       });
     }
 
@@ -118,7 +296,8 @@ footer { display: none !important; }
       console.log(fname);
       document.getElementById('truth').setAttribute("visible", false);
       document.getElementById('reco').setAttribute("visible", false);
-      document.getElementById('angle').setAttribute("visible", false);
+      document.getElementById('angleScore').setAttribute("visible", false);
+      document.getElementById('angleLabel').setAttribute("visible", false);
       loadCSVData(fname);
     }
 
@@ -238,7 +417,8 @@ footer { display: none !important; }
 
         this.truth.setAttribute("visible", false);
         this.reco.setAttribute("visible", false);
-        document.getElementById('angle').setAttribute("visible", false);
+        document.getElementById('angleScore').setAttribute("visible", false);
+        document.getElementById('angleLabel').setAttribute("visible", false);
 
         var msg = document.getElementById('msg');
         var bkg = document.getElementById('textBackground');
@@ -250,6 +430,8 @@ footer { display: none !important; }
         bkg.removeAttribute("animation__t2");
         bkg.setAttribute("opacity", 0.5);
         bkg.setAttribute("visible", true);
+
+        Sound.stopAmbient();
       },
       skip: function (evt) {
         this.msg_count = 100;
@@ -260,6 +442,14 @@ footer { display: none !important; }
       },
       enter: function (evt) {
         this.detector.setAttribute("visible", true);
+
+        if (!Sound.ctx) {
+          var listener = new THREE.AudioListener();
+          this.scene.camera.add(listener);
+          Sound.init(listener);
+        }
+        Sound.startAmbient();
+
         load_event(0);
         this.next_msg("Press both triggers to move, rotate, and scale the detector.", 7000);
       },
@@ -283,10 +473,14 @@ footer { display: none !important; }
         const scoreRadians = Math.min(angleRadians, Math.PI - angleRadians);
         const scoreDegrees = THREE.MathUtils.radToDeg(scoreRadians);
 
-        var text = document.getElementById('angle');
-        text.setAttribute("visible", true);
-        text.setAttribute("opacity", 1);
-        text.setAttribute("value", "Score: " + scoreDegrees.toFixed(1) + String.fromCharCode(176) + "\\nDifference between true direction and guess.");
+        var scoreText = document.getElementById('angleScore');
+        scoreText.setAttribute("visible", true);
+        scoreText.setAttribute("opacity", 1);
+        scoreText.setAttribute("value", "Score: " + scoreDegrees.toFixed(1) + " deg");
+
+        document.getElementById('angleLabel').setAttribute("visible", true);
+
+        Sound.playReveal();
 
         this.scores.push(scoreDegrees);
 
@@ -295,7 +489,7 @@ footer { display: none !important; }
             var average = total / this.scores.length;
             this.next_msg(
                 "Congratulations, you successfully reconstructed " + numEvents + " neutrino events!" +
-                "\\nYour average error was " + average.toFixed(1) + String.fromCharCode(176) + "." +
+                "\\nYour average error was " + average.toFixed(1) + " deg." +
                 "\\nIceCube's real reconstruction algorithms can resolve directions to sub-degree precision." +
                 "\\n\\nPress A to start over, or press B to exit.",
                 500
@@ -366,12 +560,14 @@ footer { display: none !important; }
 
       rgp: function (evt) {
           this.rightGripPressed = true;
+          if (this.leftGripPressed && !this.recoed) Sound.playClick();
       },
       rgr: function (evt) {
           this.rightGripPressed = false;
       },
       lgp: function (evt) {
           this.leftGripPressed = true;
+          if (this.rightGripPressed && !this.recoed) Sound.playClick();
       },
       lgr: function (evt) {
           this.leftGripPressed = false;
