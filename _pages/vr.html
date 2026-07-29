@@ -141,15 +141,6 @@ footer { display: none !important; }
       visible="false"
     ></a-text>
 
-   <a-text
-      id="debugIndex"
-      position="0 -0.5 -2"
-      value=""
-      color="yellow"
-      align="center"
-      scale="0.3 0.3 0.3"
-    ></a-text>
-
  </a-entity>
 
 </a-scene>
@@ -196,6 +187,7 @@ footer { display: none !important; }
   function initApp() {
     var zoffset = 520.;
     var xscale = 0.0015;
+    var numEvents = 3;
 
     function loadCSVData(filePath) {
       d3.csv(filePath).then(function(data) {
@@ -227,13 +219,13 @@ footer { display: none !important; }
     }
 
     function load_event(index) {
-      var eventIndex = index % 10;
+      var eventIndex = index % numEvents;
       var fname = "https://raw.githubusercontent.com/philippeller/pointsource/master/example_event" + eventIndex.toString() +".csv";
 
       console.log(fname);
       document.getElementById('truth').setAttribute("visible", false);
       document.getElementById('reco').setAttribute("visible", false);
-      document.getElementById('debugIndex').setAttribute("value", "Event #" + eventIndex);
+      document.getElementById('angle').setAttribute("visible", false);
       loadCSVData(fname);
     }
 
@@ -268,6 +260,7 @@ footer { display: none !important; }
         this.reco = document.getElementById('reco');
 
         this.file_index = 0;
+        this.scores = [];
 
         this.msg_count = 0;
 
@@ -334,6 +327,7 @@ footer { display: none !important; }
       reset: function (evt) {
         this.msg_count = 0;
         this.file_index = 0;
+        this.scores = [];
         this.recoed = false;
         this.moving = false;
         this.leftTriggerPressed = false;
@@ -349,6 +343,7 @@ footer { display: none !important; }
 
         this.truth.setAttribute("visible", false);
         this.reco.setAttribute("visible", false);
+        document.getElementById('angle').setAttribute("visible", false);
 
         var msg = document.getElementById('msg');
         var bkg = document.getElementById('textBackground');
@@ -374,37 +369,46 @@ footer { display: none !important; }
         this.next_msg("Press both triggers to move, rotate, and scale the detector.", 7000);
       },
       show_truth: function (evt) {
+        if (this.recoed) return;
         this.recoed = true;
-        this.truth.object3D.rotation.z = Math.PI - meta[this.file_index%10][1];
-        this.truth.object3D.rotation.y = meta[this.file_index%10][0] - Math.PI/2;
+        this.truth.object3D.rotation.z = Math.PI - meta[this.file_index%numEvents][1];
+        this.truth.object3D.rotation.y = meta[this.file_index%numEvents][0] - Math.PI/2;
         this.truth.setAttribute("visible", true);
 
+        // Compare direction vectors rather than full orientations, since the
+        // cylinders are rotationally symmetric about their own axis and a
+        // quaternion-to-quaternion angle would pick up spurious twist.
+        const truthDir = new THREE.Vector3(0, 1, 0).applyEuler(this.truth.object3D.rotation);
+        const recoDir = new THREE.Vector3(0, 1, 0).applyQuaternion(this.reco.object3D.quaternion);
+        const dot = THREE.MathUtils.clamp(truthDir.dot(recoDir), -1, 1);
+        const angleRadians = Math.acos(dot);
 
-        const quaternion1 = new THREE.Quaternion().setFromEuler(this.truth.object3D.rotation);
-        const quaternion2 = new THREE.Quaternion().setFromEuler(this.reco.object3D.rotation);
-
-              // Calculate the angular difference in radians
-              const angleRadians = quaternion1.angleTo(quaternion2);
-
-              // Convert to degrees
-              const angleDegrees = THREE.MathUtils.radToDeg(angleRadians);
+        // We don't care about the 180-degree (time-reversal) ambiguity, so
+        // score against whichever of truth/flipped-truth is closer.
+        const scoreRadians = Math.min(angleRadians, Math.PI - angleRadians);
+        const scoreDegrees = THREE.MathUtils.radToDeg(scoreRadians);
 
         var text = document.getElementById('angle');
-        //text.setAttribute("visible", true);
-        //text.setAttribute("opacity", 1);
-        //text.setAttribute("value", angleDegrees.toFixed(2) + " Degree");
-        console.log(angleDegrees.toFixed(2) + String.fromCharCode(176));
+        text.setAttribute("visible", true);
+        text.setAttribute("opacity", 1);
+        text.setAttribute("value", "Score: " + scoreDegrees.toFixed(1) + String.fromCharCode(176));
 
-        //text.removeAttribute("animation");
-        //text.setAttribute("animation", "property:opacity; from:1; to:0; delay:3000; dur:1000; autoplay:true");
+        this.scores.push(scoreDegrees);
 
-                   if (this.msg_count == 3) {
-                        this.msg_count = 4;
-                        this.next_msg("Press A to move to the next event.");
-                     }
+        if (this.scores.length >= numEvents) {
+            var total = this.scores.reduce(function (a, b) { return a + b; }, 0);
+            var average = total / this.scores.length;
+            this.next_msg("Round complete! Average error: " + average.toFixed(1) + String.fromCharCode(176) + ". Press A to play again.", 500);
+        } else if (this.msg_count == 3) {
+            this.msg_count = 4;
+            this.next_msg("Press A to move to the next event.");
+        }
 
       },
       next: function (evt) {
+        if (this.scores.length >= numEvents) {
+            this.scores = [];
+        }
         this.file_index += 1;
         load_event(this.file_index);
         this.recoed = false;
