@@ -39,7 +39,7 @@ footer { display: none !important; }
   opacity: 0 !important;
   pointer-events: none !important;
 }
-</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false"> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false"> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
+</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false"> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false"> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false"></a-text> <a-text id="debugIndex" position="0 -0.5 -2" value="" color="yellow" align="center" scale="0.3 0.3 0.3"></a-text> </a-entity> </a-scene> </template> <script>
 (function () {
   var arContent = document.getElementById('vr-ar-content');
   var fallback = document.getElementById('vr-fallback');
@@ -111,11 +111,13 @@ footer { display: none !important; }
     }
 
     function load_event(index) {
-      var fname = "https://raw.githubusercontent.com/philippeller/pointsource/master/example_event" + (index%10).toString() +".csv";
+      var eventIndex = index % 10;
+      var fname = "https://raw.githubusercontent.com/philippeller/pointsource/master/example_event" + eventIndex.toString() +".csv";
 
       console.log(fname);
       document.getElementById('truth').setAttribute("visible", false);
       document.getElementById('reco').setAttribute("visible", false);
+      document.getElementById('debugIndex').setAttribute("value", "Event #" + eventIndex);
       loadCSVData(fname);
     }
 
