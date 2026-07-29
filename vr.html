@@ -39,7 +39,7 @@ footer { display: none !important; }
   opacity: 0 !important;
   pointer-events: none !important;
 }
-</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false" hand-controls-left> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false" hand-controls-right> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
+</style> <template id="ar-scene-template"> <a-scene embedded renderer="antialias: true; highRefreshRate: true; foveationLevel: 3" obb-collider="showColliders: false" xr-mode-ui="XRMode: ar; enterARButton: #myEnterARButton" id="scene"> <a-entity test></a-entity> <a-entity id="ctrl_left" oculus-touch-controls="hand: left" visible="false"> </a-entity> <a-entity id="ctrl_right" oculus-touch-controls="hand: right" visible="false"> </a-entity> <a-entity id="env" visible="false"> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="#de21d8" id="truth" visible="false"></a-cylinder> <a-cylinder position="0 0 0" rotation="0 0 30" radius="0.003" height="3" color="lightblue" id="reco" visible="false"></a-cylinder> </a-entity> <a-entity camera> <a-text id="msg" position="0 0 -2" value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y." color="white" align="center" scale="0.4 0.4 0.4"> </a-text> <a-plane id="textBackground" position="0 0 -2.01" width="2.2" height="0.5" color="black" opacity="0.5"></a-plane> <a-text id="angle" position="0 0.3 -2" value="" color="#FF00FF" align="center" scale="1.5 1.5 1.5" visible="false"></a-text> </a-entity> </a-scene> </template> <script>
 (function () {
   var arContent = document.getElementById('vr-ar-content');
   var fallback = document.getElementById('vr-fallback');
@@ -65,7 +65,6 @@ footer { display: none !important; }
     loadScript('https://aframe.io/releases/1.5.0/aframe.min.js')
       .then(function () { return loadScript('https://d3js.org/d3.v7.js'); })
       .then(function () { return loadScript('https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.5.0/dist/aframe-extras.min.js'); })
-      .then(function () { return loadScript('https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js'); })
       .then(initApp)
       .catch(showFallback);
   }
@@ -103,7 +102,7 @@ footer { display: none !important; }
             .attr("metal", 1)
             .attr("segments-width", 16)
             .attr("segments-height", 8)
-            .attr("color", d=>d3.interpolateSpectral(Math.min(Math.max((d.time-q20)/(q80-q20),0),1)))
+            .attr("color", d=>d3.interpolateSpectral(q80 > q20 ? Math.min(Math.max((d.time-q20)/(q80-q20),0),1) : 0.5))
             .attr("radius", d=>String(Math.pow(d.charge, 1/3)*10*xscale))
             .attr("position", function (d) { return parseFloat(d.x)*xscale + " " + (parseFloat(d.z)+zoffset)*xscale + " " + parseFloat(d.y)*xscale; } )
             .attr("opacity", 0)
@@ -197,8 +196,8 @@ footer { display: none !important; }
       next_msg: function(x, delay=3000) {
             console.log(x);
 
-            msg = document.getElementById('msg');
-            bkg = document.getElementById('textBackground');
+            var msg = document.getElementById('msg');
+            var bkg = document.getElementById('textBackground');
             msg.removeAttribute("animation__t1");
             msg.removeAttribute("animation__t2");
 
@@ -207,7 +206,7 @@ footer { display: none !important; }
             msg.setAttribute("animation__t2", "property:opacity; to:1; startEvents: animationcomplete__t1; delay:1000; dur:1000");
             bkg.removeAttribute("animation__t1");
             bkg.removeAttribute("animation__t2");
-            bkg.setAttribute("animation__t1","property:opacity; from:0.5; to:0; delay: " + delay +"; dur:2000, autoplay:true");
+            bkg.setAttribute("animation__t1","property:opacity; from:0.5; to:0; delay: " + delay +"; dur:2000; autoplay:true");
             bkg.setAttribute("animation__t2", "property:opacity; to:0.5; startEvents: animationcomplete__t1; delay:1000; dur:1000");
       },
 
@@ -246,8 +245,8 @@ footer { display: none !important; }
       },
       skip: function (evt) {
         this.msg_count = 100;
-        msg = document.getElementById('msg');
-        bkg = document.getElementById('textBackground');
+        var msg = document.getElementById('msg');
+        var bkg = document.getElementById('textBackground');
         msg.setAttribute("visible", false);
         bkg.setAttribute("visible", false);
       },
@@ -272,7 +271,7 @@ footer { display: none !important; }
               // Convert to degrees
               const angleDegrees = THREE.MathUtils.radToDeg(angleRadians);
 
-        text = document.getElementById('angle');
+        var text = document.getElementById('angle');
         //text.setAttribute("visible", true);
         //text.setAttribute("opacity", 1);
         //text.setAttribute("value", angleDegrees.toFixed(2) + " Degree");
@@ -292,14 +291,14 @@ footer { display: none !important; }
         load_event(this.file_index);
         this.recoed = false;
         if (this.msg_count == 4) {
-            msg = document.getElementById('msg');
-            bkg = document.getElementById('textBackground');
+            var msg = document.getElementById('msg');
+            var bkg = document.getElementById('textBackground');
             msg.removeAttribute("animation__t1");
             msg.removeAttribute("animation__t2");
-            msg.setAttribute("animation__t1","property:opacity; to:0; delay: 3000, dur:2000, autoplay:true");
+            msg.setAttribute("animation__t1","property:opacity; to:0; delay: 3000; dur:2000; autoplay:true");
             bkg.removeAttribute("animation__t1");
             bkg.removeAttribute("animation__t2");
-            bkg.setAttribute("animation__t1","property:opacity; to:0; delay: 3000, dur:2000, autoplay:true");
+            bkg.setAttribute("animation__t1","property:opacity; to:0; delay: 3000; dur:2000; autoplay:true");
             this.msg_count = 5;
         }
       },
@@ -386,12 +385,15 @@ footer { display: none !important; }
                   // Compute the distance between the controllers
                   const currentDistance = leftPos.distanceTo(rightPos);
                   const previousDistance = this.previousLeftPos.distanceTo(this.previousRightPos);
-                  const distanceDelta = currentDistance / previousDistance;
 
-                  // Apply relative scaling based on the change in distance
-                  this.detector.object3D.scale.x *= distanceDelta;
-                  this.detector.object3D.scale.y *= distanceDelta;
-                  this.detector.object3D.scale.z *= distanceDelta;
+                  if (previousDistance > 0.001) {
+                    const distanceDelta = currentDistance / previousDistance;
+
+                    // Apply relative scaling based on the change in distance
+                    this.detector.object3D.scale.x *= distanceDelta;
+                    this.detector.object3D.scale.y *= distanceDelta;
+                    this.detector.object3D.scale.z *= distanceDelta;
+                  }
 
                   // Update previous positions for the next frame
                   this.previousLeftPos.copy(leftPos);
@@ -443,7 +445,7 @@ footer { display: none !important; }
     document.getElementById('ar-scene-mount').appendChild(tpl.content.cloneNode(true));
   }
 })();
-</script> </article> </div> </div> <footer class="sticky-bottom mt-5" role="contentinfo"> <div class="container"> © Copyright 2026 Philipp Eller. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>. </div> </footer> <script>
+</script> </article> </div> </div> <footer class="sticky-bottom mt-5" role="contentinfo"> <div class="container"> © Copyright 2026 Philipp Eller. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
   window.alFolio = {
     compatBootstrap: false
   };
