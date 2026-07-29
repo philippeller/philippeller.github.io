@@ -39,6 +39,7 @@ The [projects page](/projects/) describes some of my current and recent works.
 
 I am a:
 * Member of the <a href="https://icecube.wisc.edu/">IceCube collaboration</a> and Deputy Analysis Coordinator
+* Observer of the <a href="https://www.km3net.org/">KM3NeT collaboration</a>
 
 I am a PI in:
 * the <a href="https://www.sfb1258.de/">Collaborative Research Center 1258</a>
