@@ -368,6 +368,14 @@ footer { display: none !important; }
                 var worldPos = new THREE.Vector3();
                 el.object3D.getWorldPosition(worldPos);
                 Sound.playHit(worldPos, volumeScale);
+
+                // Only hits actively fading in need the (costlier,
+                // depth-sorted) transparent render pass; once settled,
+                // fall back to plain opaque geometry so hundreds of
+                // already-revealed hits don't tax the frame rate.
+                setTimeout(function () {
+                  if (el.object3D) el.setAttribute("transparent", false);
+                }, 260);
               }, delayMs);
             });
       });
@@ -471,7 +479,7 @@ footer { display: none !important; }
             msg.removeAttribute("animation__t2");
 
         msg.setAttribute("animation__t1","property:opacity; from:1; to:0; delay: " + delay +"; dur:2000; autoplay:true");
-            msg.addEventListener("animationcomplete__t1", () => {msg.setAttribute("value", x)});
+            msg.addEventListener("animationcomplete__t1", () => {msg.setAttribute("value", x)}, {once: true});
             msg.setAttribute("animation__t2", "property:opacity; to:1; startEvents: animationcomplete__t1; delay:1000; dur:1000");
             bkg.removeAttribute("animation__t1");
             bkg.removeAttribute("animation__t2");
@@ -569,10 +577,10 @@ footer { display: none !important; }
             var total = this.scores.reduce(function (a, b) { return a + b; }, 0);
             var average = total / this.scores.length;
             this.next_msg(
-                "Congratulations, you successfully reconstructed " + numEvents + " neutrino events!" +
-                "\\nYour average error was " + average.toFixed(1) + " deg." +
-                "\\nIceCube's real reconstruction algorithms can resolve directions to sub-degree precision." +
-                "\\n\\nPress A to start over, or press B to exit.",
+                "Nice work, " + numEvents + " events reconstructed!" +
+                "\\nAverage error: " + average.toFixed(1) + " deg" +
+                "\\nIceCube reaches <1 deg precision." +
+                "\\nA: play again   B: exit",
                 500
             );
         } else if (this.msg_count == 3) {
