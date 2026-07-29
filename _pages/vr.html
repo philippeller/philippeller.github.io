@@ -135,9 +135,9 @@ footer { display: none !important; }
       id="angle"
       position="0 0.3 -2"
       value=""
-      color="#FF00FF"
+      color="white"
       align="center"
-      scale="1.5 1.5 1.5"
+      scale="0.5 0.5 0.5"
       visible="false"
     ></a-text>
 
@@ -309,6 +309,8 @@ footer { display: none !important; }
 
             var msg = document.getElementById('msg');
             var bkg = document.getElementById('textBackground');
+            msg.setAttribute("visible", true);
+            bkg.setAttribute("visible", true);
             msg.removeAttribute("animation__t1");
             msg.removeAttribute("animation__t2");
 
@@ -391,14 +393,20 @@ footer { display: none !important; }
         var text = document.getElementById('angle');
         text.setAttribute("visible", true);
         text.setAttribute("opacity", 1);
-        text.setAttribute("value", "Score: " + scoreDegrees.toFixed(1) + String.fromCharCode(176));
+        text.setAttribute("value", "Score: " + scoreDegrees.toFixed(1) + String.fromCharCode(176) + "\\nDifference between true direction and guess.");
 
         this.scores.push(scoreDegrees);
 
         if (this.scores.length >= numEvents) {
             var total = this.scores.reduce(function (a, b) { return a + b; }, 0);
             var average = total / this.scores.length;
-            this.next_msg("Round complete! Average error: " + average.toFixed(1) + String.fromCharCode(176) + ". Press A to play again.", 500);
+            this.next_msg(
+                "Congratulations, you successfully reconstructed " + numEvents + " neutrino events!" +
+                "\\nYour average error was " + average.toFixed(1) + String.fromCharCode(176) + "." +
+                "\\nIceCube's real reconstruction algorithms can resolve directions to sub-degree precision." +
+                "\\n\\nPress A to start over, or press B to exit.",
+                500
+            );
         } else if (this.msg_count == 3) {
             this.msg_count = 4;
             this.next_msg("Press A to move to the next event.");
@@ -408,6 +416,14 @@ footer { display: none !important; }
       next: function (evt) {
         if (this.scores.length >= numEvents) {
             this.scores = [];
+            var msg = document.getElementById('msg');
+            var bkg = document.getElementById('textBackground');
+            msg.removeAttribute("animation__t1");
+            msg.removeAttribute("animation__t2");
+            msg.setAttribute("visible", false);
+            bkg.removeAttribute("animation__t1");
+            bkg.removeAttribute("animation__t2");
+            bkg.setAttribute("visible", false);
         }
         this.file_index += 1;
         load_event(this.file_index);
