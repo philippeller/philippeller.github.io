@@ -141,6 +141,15 @@ footer { display: none !important; }
       visible="false"
     ></a-text>
 
+   <a-text
+      id="debugIndex"
+      position="0 -0.5 -2"
+      value=""
+      color="yellow"
+      align="center"
+      scale="0.3 0.3 0.3"
+    ></a-text>
+
  </a-entity>
 
 </a-scene>
@@ -218,11 +227,13 @@ footer { display: none !important; }
     }
 
     function load_event(index) {
-      var fname = "https://raw.githubusercontent.com/philippeller/pointsource/master/example_event" + (index%10).toString() +".csv";
+      var eventIndex = index % 10;
+      var fname = "https://raw.githubusercontent.com/philippeller/pointsource/master/example_event" + eventIndex.toString() +".csv";
 
       console.log(fname);
       document.getElementById('truth').setAttribute("visible", false);
       document.getElementById('reco').setAttribute("visible", false);
+      document.getElementById('debugIndex').setAttribute("value", "Event #" + eventIndex);
       loadCSVData(fname);
     }
 
