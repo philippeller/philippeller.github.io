@@ -114,19 +114,21 @@ footer { display: none !important; }
 
     <a-text
       id="msg"
-      position="0 0 -2"
+      position="0 -0.2 -2"
       value="Hello, you are seeing a neutrino event in IceCube! \n\n Exit anytime by pressing B. \n Skip tutorial by pressing Y."
       color="white"
       align="center"
       scale="0.4 0.4 0.4">
     </a-text>
 
-  <!-- Background plane behind the text -->
+  <!-- Background plane behind the text. Grown downward (rather than
+       centered) so the extra room doesn't creep into the score-display
+       area above it. -->
   <a-plane
     id="textBackground"
-    position="0 0 -2.01"
+    position="0 -0.2 -2.01"
     width="2.2"
-    height="0.5"
+    height="0.9"
     color="black"
     opacity="0.5"
   ></a-plane>
@@ -516,6 +518,7 @@ footer { display: none !important; }
         var bkg = document.getElementById('textBackground');
         msg.removeAttribute("animation__t1");
         msg.removeAttribute("animation__t2");
+        msg.setAttribute("value", "Hello, you are seeing a neutrino event in IceCube!\\n\\nExit anytime by pressing B.\\nSkip tutorial by pressing Y.");
         msg.setAttribute("opacity", 1);
         msg.setAttribute("visible", true);
         bkg.removeAttribute("animation__t1");
