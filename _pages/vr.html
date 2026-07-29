@@ -200,15 +200,13 @@ footer { display: none !important; }
     var numEvents = 3;
 
     // Synthesizes and plays all sound effects with the Web Audio API directly
-    // (no external audio assets to fetch on the headset). Ambient drone and
-    // one-shot UI cues are non-positional; hit "plops" are spatialized via
+    // (no external audio assets to fetch on the headset). One-shot UI cues
+    // are non-positional; hit "plops" are spatialized via
     // THREE.PositionalAudio so they seem to come from each sensor.
     var Sound = {
       ctx: null,
       listener: null,
       masterGain: null,
-      ambientGain: null,
-      ambientNodes: null,
       plopBuffer: null,
       activeHitVoices: 0,
       maxHitVoices: 8,
@@ -231,78 +229,11 @@ footer { display: none !important; }
         var data = buffer.getChannelData(0);
         for (var i = 0; i < length; i++) {
           var t = i / sampleRate;
-          var freq = 900 * Math.pow(300 / 900, t / duration);
+          var freq = 300 * Math.pow(90 / 300, t / duration);
           var envelope = Math.exp(-t * 18);
           data[i] = Math.sin(2 * Math.PI * freq * t) * envelope;
         }
         return buffer;
-      },
-
-      startAmbient: function () {
-        if (this.ambientNodes) return;
-        var ctx = this.ctx;
-        var now = ctx.currentTime;
-
-        var ambientGain = ctx.createGain();
-        ambientGain.gain.value = 0;
-        ambientGain.connect(this.masterGain);
-        ambientGain.gain.linearRampToValueAtTime(0.12, now + 4);
-
-        var filter = ctx.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.value = 700;
-        filter.connect(ambientGain);
-
-        var osc1 = ctx.createOscillator();
-        osc1.type = "triangle";
-        osc1.frequency.value = 55; // A1 drone
-        osc1.connect(filter);
-
-        var osc2 = ctx.createOscillator();
-        osc2.type = "sine";
-        osc2.frequency.value = 82.5; // E2, slightly detuned for slow beating
-        osc2.detune.value = -6;
-        osc2.connect(filter);
-
-        var shimmerGain = ctx.createGain();
-        shimmerGain.gain.value = 0.25;
-        shimmerGain.connect(filter);
-        var osc3 = ctx.createOscillator();
-        osc3.type = "sine";
-        osc3.frequency.value = 220; // high shimmer layer
-        osc3.connect(shimmerGain);
-
-        // Slow LFO on the filter cutoff for a gentle "breathing" swell.
-        var lfo = ctx.createOscillator();
-        lfo.frequency.value = 0.05;
-        var lfoGain = ctx.createGain();
-        lfoGain.gain.value = 300;
-        lfo.connect(lfoGain);
-        lfoGain.connect(filter.frequency);
-
-        osc1.start();
-        osc2.start();
-        osc3.start();
-        lfo.start();
-
-        this.ambientGain = ambientGain;
-        this.ambientNodes = [osc1, osc2, osc3, lfo];
-      },
-
-      stopAmbient: function () {
-        if (!this.ambientNodes) return;
-        var ctx = this.ctx;
-        var now = ctx.currentTime;
-        var gain = this.ambientGain;
-        var nodes = this.ambientNodes;
-        gain.gain.cancelScheduledValues(now);
-        gain.gain.setValueAtTime(gain.gain.value, now);
-        gain.gain.linearRampToValueAtTime(0, now + 1.5);
-        setTimeout(function () {
-          nodes.forEach(function (n) { try { n.stop(); } catch (e) {} });
-        }, 1600);
-        this.ambientNodes = null;
-        this.ambientGain = null;
       },
 
       playHit: function (worldPos) {
@@ -334,7 +265,7 @@ footer { display: none !important; }
         var now = ctx.currentTime;
         var osc = ctx.createOscillator();
         osc.type = "square";
-        osc.frequency.value = 1200;
+        osc.frequency.value = 350;
         var gain = ctx.createGain();
         gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
@@ -385,12 +316,12 @@ footer { display: none !important; }
           .data(data)
           .join("a-sphere")
             .attr("id", "pulse")
-            .attr("metal", 1)
             .attr("segments-width", 16)
             .attr("segments-height", 8)
             .attr("color", d=>d3.interpolateSpectral(q80 > q20 ? Math.min(Math.max((d.time-q20)/(q80-q20),0),1) : 0.5))
             .attr("radius", d=>String(Math.pow(d.charge, 1/3)*10*xscale))
             .attr("position", function (d) { return parseFloat(d.x)*xscale + " " + (parseFloat(d.z)+zoffset)*xscale + " " + parseFloat(d.y)*xscale; } )
+            .attr("transparent", true)
             .attr("opacity", 0)
             .attr("animation", function(d) {return "property: opacity; to:1; dur: 10; delay: " + String((d.time-min)/2)})
             .each(function (d) {
@@ -547,8 +478,6 @@ footer { display: none !important; }
         bkg.removeAttribute("animation__t2");
         bkg.setAttribute("opacity", 0.5);
         bkg.setAttribute("visible", true);
-
-        Sound.stopAmbient();
       },
       skip: function (evt) {
         this.msg_count = 100;
@@ -565,7 +494,6 @@ footer { display: none !important; }
           this.scene.camera.add(listener);
           Sound.init(listener);
         }
-        Sound.startAmbient();
 
         load_event(0);
         this.next_msg("Press both triggers to move, rotate, and scale the detector.", 7000);
@@ -677,16 +605,16 @@ footer { display: none !important; }
 
       rgp: function (evt) {
           this.rightGripPressed = true;
-          if (this.leftGripPressed && !this.recoed) Sound.playClick();
       },
       rgr: function (evt) {
+          if (this.leftGripPressed && !this.recoed) Sound.playClick();
           this.rightGripPressed = false;
       },
       lgp: function (evt) {
           this.leftGripPressed = true;
-          if (this.rightGripPressed && !this.recoed) Sound.playClick();
       },
       lgr: function (evt) {
+          if (this.rightGripPressed && !this.recoed) Sound.playClick();
           this.leftGripPressed = false;
       },
       tick: function () {
